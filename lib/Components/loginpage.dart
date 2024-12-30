@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'signup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -9,7 +10,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   bool passwordVisibility = false;
+  TextEditingController usernameCtlr = TextEditingController();
+  TextEditingController passwordCtlr = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -17,114 +22,148 @@ class _LoginPageState extends State<LoginPage> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('SIGN IN'),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(flex: 1),
-              Column(
-                children: [
-                  const Text(
-                    'SIGN IN',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+        backgroundColor: Colors.lightGreen.shade100,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 40, 24, 24),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    const Text(
+                      "Welcome Back!",
+                      style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 60),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      prefixIcon: Icon(Icons.person),
+                    const SizedBox(height: 40),
+                    _textField(
+                      controller: usernameCtlr,
+                      label: 'Username',
+                      icon: Icons.person_outline,
                     ),
-                  ),
-
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: const Icon(Icons.lock),
+                    _textField(
+                      controller: passwordCtlr,
+                      label: 'Password',
+                      icon: Icons.lock_outline,
+                      obscureText: !passwordVisibility,
                       suffixIcon: IconButton(
-                        icon: Icon(
-                          passwordVisibility
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
                         onPressed: () {
                           setState(() {
                             passwordVisibility = !passwordVisibility;
                           });
                         },
-                      ),
-                    ),
-                    obscureText: !passwordVisibility,
-                  ),
-                  // SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        //forgot password functionality
-                      },
-                      child: const Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.blue,
+                        icon: Icon(
+                          passwordVisibility
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.grey.shade700,
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 50),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          //forgot password functionality
+                        },
+                        child: const Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    FilledButton(
                       onPressed: login,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(184, 121, 222, 178),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Colors.green[700],
+                        minimumSize: const Size.fromHeight(56),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                        elevation: 5,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 15),
-                        textStyle: const TextStyle(fontSize: 18),
                       ),
                       child: const Text(
                         'Sign In',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     ),
-                  ),
-                  // SizedBox(height: 1),
-                  TextButton(
-                    onPressed: () {
-                      //navigating to sign up page
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignUpPage()),
-                      );
-                    },
-                    child: const Text(
-                      "Don't have an account? Sign up",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.blue,
-                      ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Don't have an account?",
+                          style: TextStyle(color: Colors.grey.shade800),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SignUpPage()),
+                            );
+                          },
+                          child: Text(
+                            'Sign Up',
+                            style: TextStyle(color: Colors.grey.shade700),
+                          ),
+                        ),
+                      ],
                     ),
-                  )
-                ],
+                  ],
+                ),
               ),
-              const Spacer(flex: 2),
-            ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _textField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    bool obscureText = false,
+    TextInputType? keyboardType,
+    Widget? suffixIcon,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        style: const TextStyle(fontSize: 16),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.grey.shade700),
+          prefixIcon: Icon(icon, color: Colors.grey.shade700),
+          suffixIcon: suffixIcon,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade700),
+          ),
+          filled: true,
+          fillColor: Colors.lightGreen.shade50,
+        ),
+        validator: (value) {
+          if (value?.isEmpty ?? true) {
+            return '*required';
+          }
+          return null;
+        },
       ),
     );
   }

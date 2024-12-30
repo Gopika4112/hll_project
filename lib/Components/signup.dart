@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:hll_project/Components/loginpage.dart';
+import 'package:hll_project/Components/signup2.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -9,6 +10,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController nameCtlr = TextEditingController();
   TextEditingController usernameCtlr = TextEditingController();
   TextEditingController emailCtlr = TextEditingController();
@@ -23,148 +25,106 @@ class _SignUpPageState extends State<SignUpPage> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('SIGN UP'),
-        ),
-        body: Center(
+        backgroundColor: Colors.lightGreen[100],
+        body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 20),
-                  Column(
-                    children: [
-                      const Text(
-                        'SIGN UP',
-                        style: TextStyle(
-                          fontSize: 28,
+              padding: const EdgeInsets.fromLTRB(24, 40, 24, 24),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Create your\naccount',
+                      style: TextStyle(
+                          fontSize: 36,
                           fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: nameCtlr,
-                        decoration: const InputDecoration(
-                          labelText: 'Name',
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Icon(Icons.person, size: 20),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: dobCtlr,
-                        readOnly: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Date of Birth',
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Icon(Icons.calendar_today, size: 20),
-                          ),
-                        ),
-                        onTap: () => _selectDate(context),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: nameCtlr,
-                        decoration: const InputDecoration(
-                          labelText: 'School',
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Icon(Icons.school, size: 20),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: usernameCtlr,
-                        decoration: const InputDecoration(
-                          labelText: 'Username',
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Icon(Icons.person, size: 20),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: emailCtlr,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Icon(Icons.email, size: 20),
-                          ),
-                        ),
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: passwordCtlr,
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Icon(Icons.lock, size: 20),
-                          ),
-                        ),
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: confirmPasswordCtlr,
-                        decoration: const InputDecoration(
-                          labelText: 'Confirm Password',
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Icon(Icons.lock, size: 20),
-                          ),
-                        ),
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 50),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: signUp,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(184, 121, 222, 178),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
+                          height: 1.2),
+                    ),
+
+                    const SizedBox(height: 40),
+                    _textField(
+                      controller: nameCtlr,
+                      label: "Full Name",
+                      icon: Icons.person_outline,
+                    ),
+                    _textField(
+                      controller: usernameCtlr,
+                      label: 'Username',
+                      icon: Icons.alternate_email,
+                    ),
+                    // const SizedBox(height: 20),
+                    _textField(
+                      controller: emailCtlr,
+                      label: 'Email',
+                      icon: Icons.email_outlined,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    // const SizedBox(height: 20),
+                    _textField(
+                      controller: passwordCtlr,
+                      label: 'Password',
+                      icon: Icons.lock_outline,
+                      obscureText: true,
+                    ),
+                    // const SizedBox(height: 20),
+                    _textField(
+                      controller: confirmPasswordCtlr,
+                      label: 'Confirm Password',
+                      icon: Icons.lock_outline,
+                      obscureText: true,
+                      
+                    ),
+                    const SizedBox(height: 40),
+                    FilledButton(
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PersonalInfo(),
                             ),
-                            elevation: 5,
-                            shadowColor: Colors.grey[300],
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 15),
-                            textStyle: const TextStyle(fontSize: 18),
-                          ),
-                          child: const Text(
-                            'Sign Up',
-                            style: TextStyle(color: Colors.white),
-                          ),
+                          );
+                        }
+                      },
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Colors.green[700],
+                        minimumSize: const Size.fromHeight(56),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      // SizedBox(height: 1),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          "Already have an account? Sign in",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.blue,
+                      child: const Text(
+                        'Continue',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Already have an account?',
+                          style: TextStyle(color: Colors.grey.shade800),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginPage(),
+                            ),
+                          ),
+                          child: Text(
+                            'Sign in',
+                            style: TextStyle(color: Colors.grey.shade700),
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 40),
-                ],
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -173,39 +133,43 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  //Date picker function
-  Future<void> _selectDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
+  Widget _textField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    bool obscureText = false,
+    TextInputType? keyboardType,
+    // String? Function(String?)? validator,
+    TextEditingController? confirmPasswordCtlr,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        style: const TextStyle(fontSize: 16),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.grey.shade700),
+          prefixIcon: Icon(icon, color: Colors.grey.shade700),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.green.shade700),
+          ),
+          filled: true,
+          fillColor: Colors.lightGreen.shade50,
+        ),
+        
+        validator: (value) {
+          if (value?.isEmpty ?? true) {
+            return '*required';
+          }
+          return null;
+        },
+      ),
     );
-    if (pickedDate != null) {
-      String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate);
-      setState(() {
-        dobCtlr.text = formattedDate;
-      });
-    }
-  }
-
-  void signUp() {
-    if (nameCtlr.text.isEmpty ||
-        dobCtlr.text.isEmpty ||
-        usernameCtlr.text.isEmpty ||
-        emailCtlr.text.isEmpty ||
-        passwordCtlr.text.isEmpty ||
-        confirmPasswordCtlr.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
-      );
-      return;
-    }
-    if (passwordCtlr.text != confirmPasswordCtlr.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
-      return;
-    }
   }
 }
